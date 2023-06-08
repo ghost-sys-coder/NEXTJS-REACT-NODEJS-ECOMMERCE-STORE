@@ -1,6 +1,7 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import Stripe from "stripe";
 import { buffer } from "micro/types/src/lib";
+import { Order } from "@/models/Order";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -22,10 +23,16 @@ export default async function handler(req, res) {
 
   // Handle the event
   switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntentSucceeded = event.data.object;
-      // Then define and call a function to handle the event payment_intent.succeeded
-          console.log(paymentIntentSucceeded)
+    case 'checkout.session.completed':
+      const paymentData = event.data.object;
+      const orderId = paymentData.metadata.orderId;
+      const paid = paymentData.payment_status === 'paid';
+      
+      if (orderId && paid) {
+        await Order.findByIdAndUpdate(orderId, {
+          paid: true
+        })
+      }
       break;
     // ... handle other event types
     default:
@@ -33,6 +40,8 @@ export default async function handler(req, res) {
   }
 
 }
+
+//acct_1NErJQCMTaG2WfF3
 
 export const config = {
     api: {bodyParser: false}

@@ -59,7 +59,7 @@ export default async function handler(req, res) {
         customer_email: email,
         success_url: process.env.PUBLIC_URL + '/success',
         cancel_url: process.env.PUBLIC_URL + '/cancel',
-        metadata: { orderId: orderDoc._id.toString() }
+        metadata: { orderId: orderDoc._id.toString(), test: 'ok' }
     });
 
 
