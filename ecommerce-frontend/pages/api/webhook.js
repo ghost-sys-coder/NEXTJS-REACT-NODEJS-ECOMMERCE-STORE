@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export default async function handler(req, res) {
     await mongooseConnect();
 
-    const endpointSecret = "whsec_58b7e0855c977d821b1ed3a2a656e81bd655695b98eb9134ad9be9cf29639aea";
+  const endpointSecret = process.env.ENDPOINTSECRET;
 
     const sig = req.headers['stripe-signature'];
 
